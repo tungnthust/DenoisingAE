@@ -67,7 +67,7 @@ class BrainDataset(torch.utils.data.Dataset):
         if dataset == "brats2021":
             datapath = "kaggle/input/brats2021/data/brats2021_preprocessed"
 
-            path = datapath / f"npy_{split}"
+            path =   f"{datapath}/npy_{split}"
 
         # Slice skip conditions:
         threshold = 0
