@@ -28,6 +28,7 @@ def eval_anomalies_batched(trainer, dataset, get_scores, batch_size=32, threshol
     i = 0
     print("Sampling...")
     for batch_idx in tqdm(range(n_batches)):
+        print("S")
         batch_items = [dataset[x] for x in
                        range(batch_idx * batch_size, min((batch_idx + 1) * batch_size, len(dataset)))]
         collate = torch.utils.data._utils.collate.default_collate
@@ -44,7 +45,7 @@ def eval_anomalies_batched(trainer, dataset, get_scores, batch_size=32, threshol
         y_true_[i:i + y_.numel()] = y_.half()
         y_pred_[i:i + y_hat.numel()] = y_hat.half()
         i += y_.numel()
-        if i > 1000:
+        if i > 32:
             break
     np.savez_compressed(f"/kaggle/working/DenoisingAE/samples.npz", y_true=y_true_, y_pred=y_pred_)
     print("Computing metrics...")
