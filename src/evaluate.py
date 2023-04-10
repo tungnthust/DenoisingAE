@@ -25,7 +25,8 @@ def eval_anomalies_batched(trainer, dataset, get_scores, batch_size=32, threshol
 
     n_batches = int(ceil(len(dataset) / batch_size))
     i = 0
-    for batch_idx in range(n_batches):
+    print("Sampling...")
+    for batch_idx in tqdm(range(n_batches)):
         batch_items = [dataset[x] for x in
                        range(batch_idx * batch_size, min((batch_idx + 1) * batch_size, len(dataset)))]
         collate = torch.utils.data._utils.collate.default_collate
@@ -44,7 +45,7 @@ def eval_anomalies_batched(trainer, dataset, get_scores, batch_size=32, threshol
         i += y_.numel()
 
     ap = average_precision_score(y_true_, y_pred_)
-
+    print("Computing metrics...")
     if return_dice:
         dice_thresholds = [x / 1000 for x in range(1000)] if threshold is None else [threshold]
         with torch.no_grad():
