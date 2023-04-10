@@ -29,7 +29,7 @@ class PatientDataset(torch.utils.data.Dataset):
 
             # Try and find which slices should be skipped and thus determine the length of the dataset.
             valid_indices = []
-            for idx in tqdm(range(self.len)):
+            for idx in range(self.len):
                 with np.load(self.slice_paths[idx]) as data:
                     if self.process is not None:
                         data = self.process(**data)
@@ -86,16 +86,18 @@ class BrainDataset(torch.utils.data.Dataset):
         assert ((n_tumour_patients is not None) or (n_healthy_patients is not None))
         self.n_tumour_patients = n_tumour_patients if n_tumour_patients is not None else len(patient_dirs)
         self.n_healthy_patients = n_healthy_patients if n_healthy_patients is not None else len(patient_dirs) - self.n_tumour_patients
-
+        print("Loading patients with tumours ...")
         # Patients with tumours
         self.patient_datasets = [PatientDataset(patient_dirs[i], process_fun=process, id=i,
                                                 skip_condition=self.skip_healthy if skip_healthy_s_in_tumour else None)
-                                 for i in range(self.n_tumour_patients)]
+                                 for i in tqdm(range(self.n_tumour_patients))]
+
+        print("Loading healthy slices from \"healthy\" patients ...")
 
         # + only healthy slices from "healthy" patients
         self.patient_datasets += [PatientDataset(patient_dirs[i],
                                                  skip_condition=self.skip_tumour if skip_tumour_s_in_healthy else None,
-                                                 process_fun=process, id=i) for i in range(self.n_tumour_patients, self.n_tumour_patients + self.n_healthy_patients)]
+                                                 process_fun=process, id=i) for i in tqdm(range(self.n_tumour_patients, self.n_tumour_patients + self.n_healthy_patients))]
 
         self.dataset = ConcatDataset(self.patient_datasets)
 
