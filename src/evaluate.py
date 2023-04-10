@@ -36,7 +36,6 @@ def eval_anomalies_batched(trainer, dataset, get_scores, batch_size=32, threshol
 
         with torch.no_grad():
             anomaly_scores = get_scores(trainer, batch)
-        print(f"Shape:{anomaly_scores.shape}")
 
         y_ = (batch_y.view(-1) > 0.5)
         y_hat = anomaly_scores.reshape(-1)
@@ -44,9 +43,9 @@ def eval_anomalies_batched(trainer, dataset, get_scores, batch_size=32, threshol
         y_true_[i:i + y_.numel()] = y_.half()
         y_pred_[i:i + y_hat.numel()] = y_hat.half()
         i += y_.numel()
-        if i > 32:
-            break
+    
     np.savez_compressed(f"/kaggle/working/DenoisingAE/samples.npz", y_true=y_true_, y_pred=y_pred_)
+    
     print("Computing metrics...")
     ap = average_precision_score(y_true_, y_pred_)
     if return_dice:
