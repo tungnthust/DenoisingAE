@@ -65,7 +65,7 @@ class BrainDataset(torch.utils.data.Dataset):
         assert split in ["train", "val", "test"]
 
         if dataset == "brats2021":
-            datapath = "kaggle/input/brats2021" / "data" / "brats2021_preprocessed"
+            datapath = "kaggle/input/brats2021/data/brats2021_preprocessed"
 
             path = datapath / f"npy_{split}"
 
