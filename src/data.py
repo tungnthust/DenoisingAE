@@ -6,7 +6,7 @@ import torch
 from torch.utils.data import Dataset
 from torch.utils.data import ConcatDataset
 import numpy as np
-
+from tqdm import tqdm
 
 class PatientDataset(torch.utils.data.Dataset):
     """
@@ -29,7 +29,7 @@ class PatientDataset(torch.utils.data.Dataset):
 
             # Try and find which slices should be skipped and thus determine the length of the dataset.
             valid_indices = []
-            for idx in range(self.len):
+            for idx in tqdm(range(self.len)):
                 with np.load(self.slice_paths[idx]) as data:
                     if self.process is not None:
                         data = self.process(**data)

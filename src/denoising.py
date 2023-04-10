@@ -107,14 +107,15 @@ def denoising(identifier: str, data: Optional[Union[str, DataDescriptor]] = None
 
 
 def train(id: str = "model", noise_res: int = 16, noise_std: float = 0.2, seed: int = 0, batch_size: int = 16):
+    print("Loading dataset ...")
     dd = BrainAEDataDescriptor(dataset="brats2021", n_train_patients=None, n_val_patients=None,
                                seed=seed, batch_size=batch_size)
-
+    print("Create denoising mdoel ...")
     trainer = denoising(id, data=dd, lr=0.0001, depth=4,
                         wf=6, noise_std=noise_std, noise_res=noise_res)
-
+    print("Training ...")
     trainer.train(epoch_len=32, max_epochs=2100, val_epoch_len=32)
-
+    print("Finish")
 
 if __name__ == "__main__":
 
