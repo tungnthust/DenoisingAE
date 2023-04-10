@@ -98,7 +98,7 @@ def evaluate(id: str = "model", split: str = "test", use_cc: bool = True):
 
     trainer.load(id)
 
-    dataset = BrainDataset(dataset="brats2021", split=split, n_tumour_patients=None, n_healthy_patients=0)
+    dataset = BrainDataset(dataset="brats2021", split=split, n_tumour_patients=None, n_healthy_patients=0, skip_healthy_s_in_tumour=True)
 
     results = eval_anomalies_batched(trainer, dataset=dataset, get_scores=trainer.get_scores, return_dice=True,
                                      filter_cc=use_cc)
