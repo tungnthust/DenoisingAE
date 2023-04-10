@@ -28,7 +28,6 @@ def eval_anomalies_batched(trainer, dataset, get_scores, batch_size=32, threshol
     i = 0
     print("Sampling...")
     for batch_idx in tqdm(range(n_batches)):
-        print("S")
         batch_items = [dataset[x] for x in
                        range(batch_idx * batch_size, min((batch_idx + 1) * batch_size, len(dataset)))]
         collate = torch.utils.data._utils.collate.default_collate
@@ -37,6 +36,7 @@ def eval_anomalies_batched(trainer, dataset, get_scores, batch_size=32, threshol
 
         with torch.no_grad():
             anomaly_scores = get_scores(trainer, batch)
+        print(f"Shape:{anomaly_scores.shape}")
 
         y_ = (batch_y.view(-1) > 0.5)
         y_hat = anomaly_scores.reshape(-1)
