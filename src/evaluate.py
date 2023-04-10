@@ -22,6 +22,7 @@ def eval_anomalies_batched(trainer, dataset, get_scores, batch_size=32, threshol
 
     y_true_ = torch.zeros(128 * 128 * len(dataset), dtype=torch.half)
     y_pred_ = torch.zeros(128 * 128 * len(dataset), dtype=torch.half)
+    print(f"Train device {trainer.device}")
     print(f"Number sample: {len(dataset)}")
     n_batches = int(ceil(len(dataset) / batch_size))
     i = 0
@@ -31,7 +32,7 @@ def eval_anomalies_batched(trainer, dataset, get_scores, batch_size=32, threshol
                        range(batch_idx * batch_size, min((batch_idx + 1) * batch_size, len(dataset)))]
         collate = torch.utils.data._utils.collate.default_collate
         batch = collate(batch_items)
-
+        batch = batch.to(trainer.device)
         batch_y = get_y(batch)
 
         with torch.no_grad():
