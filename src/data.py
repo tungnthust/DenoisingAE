@@ -80,7 +80,7 @@ class BrainDataset(torch.utils.data.Dataset):
 
             return torch.from_numpy(x[0]).float(), torch.from_numpy(y[0]).float()
 
-        patient_dirs = sorted(list(path.iterdir()))
+        patient_dirs = sorted(list(Path(path).iterdir()))
         self.rng.shuffle(patient_dirs)
 
         assert ((n_tumour_patients is not None) or (n_healthy_patients is not None))
