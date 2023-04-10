@@ -3,7 +3,7 @@ from math import ceil
 import torch
 from sklearn.metrics import average_precision_score
 from tqdm import tqdm
-
+import numpy as np
 from denoising import denoising
 from data import BrainDataset
 from cc_filter import connected_components_3d
@@ -22,7 +22,7 @@ def eval_anomalies_batched(trainer, dataset, get_scores, batch_size=32, threshol
 
     y_true_ = torch.zeros(128 * 128 * len(dataset), dtype=torch.half)
     y_pred_ = torch.zeros(128 * 128 * len(dataset), dtype=torch.half)
-
+    print(f"Number sample: {len(dataset)}")
     n_batches = int(ceil(len(dataset) / batch_size))
     i = 0
     print("Sampling...")
@@ -43,9 +43,9 @@ def eval_anomalies_batched(trainer, dataset, get_scores, batch_size=32, threshol
         y_true_[i:i + y_.numel()] = y_.half()
         y_pred_[i:i + y_hat.numel()] = y_hat.half()
         i += y_.numel()
-
-    ap = average_precision_score(y_true_, y_pred_)
+    np.savez_compressed(f"/kaggle/working/Diff-SCM/samples.npz", y_true=y_true_, y_pred=y_pred_)
     print("Computing metrics...")
+    ap = average_precision_score(y_true_, y_pred_)
     if return_dice:
         dice_thresholds = [x / 1000 for x in range(1000)] if threshold is None else [threshold]
         with torch.no_grad():
