@@ -28,12 +28,16 @@ def irm_min_max_preprocess(image, low_perc=1, high_perc=99):
     return image
 
 class BRATSDataset(torch.utils.data.Dataset):
-    def __init__(self, directory, mode="train", test_flag=False):
+    def __init__(self, mode="train"):
         
         super().__init__()
         self.datapaths = []
-        with open(f'/kaggle/working/diffusion-anomaly/data/brats/{mode}_brats20_datapaths.pickle', 'rb') as fp:
-            self.datapaths = pickle.load(fp)
+        if mode != 'test':
+            with open(f'/kaggle/working/DenoisingAE/data/brats20/{mode}_healthy_brats20_datapaths.pickle', 'rb') as fp:
+                self.datapaths = pickle.load(fp)
+        else:
+            with open(f'/kaggle/working/DenoisingAE/data/brats20/val_unhealthy_brats20_datapaths.pickle', 'rb') as fp:
+                self.datapaths = pickle.load(fp)
 
     def __getitem__(self, idx):
         data = np.load(self.datapaths[idx])

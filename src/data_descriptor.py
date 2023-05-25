@@ -4,7 +4,7 @@ from typing import Optional
 import torch
 
 from data import BrainDataset
-
+from bratsloader import BRATSDataset
 
 class DataDescriptor:
 
@@ -43,26 +43,13 @@ class DataDescriptor:
 
 class BrainAEDataDescriptor(DataDescriptor):
 
-    def __init__(self, dataset="brats2021", n_train_patients: Optional[int] = None, n_val_patients: Optional[int] = 20, seed: int = 0, **kwargs):
+    def __init__(self, dataset="brats20", **kwargs):
         super().__init__(**kwargs)
-
-        self.seed = seed
-        self.dataset = dataset
-        self.n_train_patients = n_train_patients
-        self.n_val_patients = n_val_patients
 
     def get_dataset(self, split: str):
         assert split in ["train", "val"]  # "test" should not be used through the DataDescriptor interface in this case.
 
-        if split == "train":
-            n_healthy_patients = self.n_train_patients
-        elif split == "val":
-            n_healthy_patients = self.n_val_patients
-
-        seed = 0 if split == "val" else self.seed
-        dataset = BrainDataset(split=split, dataset=self.dataset, n_tumour_patients=0,
-                               n_healthy_patients=n_healthy_patients,
-                               seed=seed)
+        dataset = BRATSDataset(mode=split)
 
         return dataset
 
