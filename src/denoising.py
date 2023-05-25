@@ -114,7 +114,7 @@ def train(id: str = "model", noise_res: int = 16, noise_std: float = 0.2, seed: 
     trainer = denoising(id, data=dd, lr=0.0001, depth=4,
                         wf=6, noise_std=noise_std, noise_res=noise_res)
     print("Training ...")
-    trainer.train(epoch_len=32, max_epochs=2100, val_epoch_len=32)
+    trainer.train(max_epochs=2100)
     print("Finish")
 
 if __name__ == "__main__":
