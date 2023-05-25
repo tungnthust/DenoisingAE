@@ -188,7 +188,7 @@ class Trainer:
         path = path if path is not None else Path(__file__).parent.parent / "saved_models" / f"{name}_{epoch_no}.pt"
         path.parent.mkdir(parents=True, exist_ok=True)
         torch.save(saveable, path)
-
+        print(f'Saved model at {path}')
 
     def load(self, identifier=None, load_optimiser=True, exclude_keys=[], dir="saved_models"):
 
