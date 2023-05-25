@@ -107,14 +107,14 @@ def denoising(identifier: str, data: Optional[Union[str, DataDescriptor]] = None
     return trainer
 
 
-def train(id: str = "model", noise_res: int = 16, noise_std: float = 0.2, seed: int = 0, batch_size: int = 16):
+def train(id: str = "model", noise_res: int = 16, noise_std: float = 0.2, batch_size: int = 16, max_epochs: int = 100):
     print("Loading dataset ...")
     dd = BrainAEDataDescriptor(dataset="brats20", batch_size=batch_size)
     print("Create denoising mdoel ...")
     trainer = denoising(id, data=dd, lr=0.0001, depth=4,
                         wf=6, noise_std=noise_std, noise_res=noise_res)
     print("Training ...")
-    trainer.train(max_epochs=2100)
+    trainer.train(max_epochs=max_epochs)
     print("Finish")
 
 if __name__ == "__main__":
@@ -125,13 +125,13 @@ if __name__ == "__main__":
     parser.add_argument("-id", "--identifier", type=str, default="model", help="model name.")
     parser.add_argument("-nr", "--noise_res", type=int, default=16,  help="noise resolution.")
     parser.add_argument("-ns", "--noise_std", type=float, default=0.2, help="noise magnitude.")
-    parser.add_argument("-s", "--seed", type=int, default=0, help="random seed.")
     parser.add_argument("-bs", "--batch_size", type=int, default=16, help="model training batch size")
+    parser.add_argument("-ep", "--max_epochs", type=int, default=200, help="max epochs")
 
     args = parser.parse_args()
 
     train(id=args.identifier,
           noise_res=args.noise_res,
           noise_std=args.noise_std,
-          seed=args.seed,
-          batch_size=args.batch_size)
+          batch_size=args.batch_size,
+          max_epochs=args.max_epochs)
