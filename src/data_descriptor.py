@@ -35,8 +35,7 @@ class DataDescriptor:
         dataloader = torch.utils.data.DataLoader(dataset,
                                                  batch_size=self.batch_size,
                                                  shuffle=shuffle,
-                                                 drop_last=drop_last,
-                                                 num_workers=self.n_workers)
+                                                 drop_last=drop_last)
 
         return dataloader
 

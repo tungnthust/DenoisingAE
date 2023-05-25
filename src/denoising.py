@@ -109,7 +109,7 @@ def denoising(identifier: str, data: Optional[Union[str, DataDescriptor]] = None
 
 def train(id: str = "model", noise_res: int = 16, noise_std: float = 0.2, seed: int = 0, batch_size: int = 16):
     print("Loading dataset ...")
-    dd = BrainAEDataDescriptor(dataset="brats20")
+    dd = BrainAEDataDescriptor(dataset="brats20", batch_size=batch_size)
     print("Create denoising mdoel ...")
     trainer = denoising(id, data=dd, lr=0.0001, depth=4,
                         wf=6, noise_std=noise_std, noise_res=noise_res)
@@ -123,7 +123,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-id", "--identifier", type=str, default="model", help="model name.")
-    parser.add_argument("-nr", "--noise_res", type=float, default=16,  help="noise resolution.")
+    parser.add_argument("-nr", "--noise_res", type=int, default=16,  help="noise resolution.")
     parser.add_argument("-ns", "--noise_std", type=float, default=0.2, help="noise magnitude.")
     parser.add_argument("-s", "--seed", type=int, default=0, help="random seed.")
     parser.add_argument("-bs", "--batch_size", type=int, default=16, help="model training batch size")
