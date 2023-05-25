@@ -180,12 +180,13 @@ class Trainer:
     def save(self, path=None, name=None, **kwargs):
 
         name = self.get_id() if name is None else name
-        path = path if path is not None else Path(__file__).parent.parent / "saved_models" / f"{name}.pt"
-        path.parent.mkdir(parents=True, exist_ok=True)
+        
 
         saveable =  self.get_saveable_state()
         saveable.update(kwargs)
-
+        epoch_no = saveable['epoch_no']
+        path = path if path is not None else Path(__file__).parent.parent / "saved_models" / f"{name}_{epoch_no}.pt"
+        path.parent.mkdir(parents=True, exist_ok=True)
         torch.save(saveable, path)
 
 
