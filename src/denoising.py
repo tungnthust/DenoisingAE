@@ -114,6 +114,7 @@ def train(id: str = "model", noise_res: int = 16, noise_std: float = 0.2, batch_
     trainer = denoising(id, data=dd, lr=0.0001, depth=4,
                         wf=6, noise_std=noise_std, noise_res=noise_res)
     if resume_checkpoint:
+        print('Resume checkpoint ...')
         trainer.load(id)
     print("Training ...")
     trainer.train(max_epochs=max_epochs)
