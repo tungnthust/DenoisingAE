@@ -8,7 +8,7 @@ from bratsloader import BRATSDataset
 
 class DataDescriptor:
 
-    def __init__(self, n_workers=6, batch_size=16, **kwargs):
+    def __init__(self, n_workers=2, batch_size=32, **kwargs):
 
         self.n_workers = n_workers
         self.batch_size = batch_size
