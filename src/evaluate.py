@@ -97,7 +97,7 @@ def evaluate(id: str = "model", split: str = "test", use_cc: bool = True):
                         wf=6, noise_std=0.2, noise_res=16)  # Noise parameters don't matter during evaluation.
 
     trainer.load(id)
-
+    print(f"Evaluate at epioch {trainer.state['epoch_no']}")
     dataset = BRATSDataset(mode='test')
 
     results = eval_anomalies_batched(trainer, dataset=dataset, get_scores=trainer.get_scores, return_dice=True,
