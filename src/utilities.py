@@ -32,7 +32,8 @@ class ModelSaver:
         if self.best is None:
             self.best = res
             self.save(trainer)
-
+        elif(trainer.state['epoch_no'] % 10) == 0:
+            self.save(trainer)
         else:
             if self.better(res, self.best):
                 self.save(trainer)
