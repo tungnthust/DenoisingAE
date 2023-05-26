@@ -43,7 +43,7 @@ class BRATSDataset(torch.utils.data.Dataset):
         data = np.load(self.datapaths[idx])
         image = data['image']
         image = image[[1, 2, 3, 0], :, :]
-        image = F.interpolate(torch.Tensor(np.expand_dims(image, axis=0)), mode="bilinear", size=(128, 128))[0]
+        image = np.array(F.interpolate(torch.Tensor(np.expand_dims(image, axis=0)), mode="bilinear", size=(128, 128))[0])
         for i in range(image.shape[0]):
             image[i] = irm_min_max_preprocess(image[i])
         mask = data['mask']
