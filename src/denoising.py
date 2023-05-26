@@ -18,18 +18,18 @@ from utilities import median_pool, ModelSaver
 from unet import UNet
 
 
-def denoising(identifier: str, data: Optional[Union[str, DataDescriptor]] = None, lr=0.001, depth=4, wf=7, n_input=4, noise_std=0.2, noise_res=32):
+def denoising(identifier: str, data: Optional[Union[str, DataDescriptor]] = None, lr=0.001, depth=4, wf=7, n_input=4, noise_std=0.2, noise_res=16):
     device = torch.device("cuda")
 
     def noise(x):
 
         ns = torch.normal(mean=torch.zeros(x.shape[0], x.shape[1], noise_res, noise_res), std=noise_std).to(x.device)
 
-        ns = F.upsample_bilinear(ns, size=[256, 256])
+        ns = F.upsample_bilinear(ns, size=[128, 128])
 
         # Roll to randomly translate the generated noise.
-        roll_x = random.choice(range(256))
-        roll_y = random.choice(range(256))
+        roll_x = random.choice(range(128))
+        roll_y = random.choice(range(128))
         ns = torch.roll(ns, shifts=[roll_x, roll_y], dims=[-2, -1])
 
         mask = x.sum(dim=1, keepdim=True) > 0.01
