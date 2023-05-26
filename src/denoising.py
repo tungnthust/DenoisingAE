@@ -107,7 +107,7 @@ def denoising(identifier: str, data: Optional[Union[str, DataDescriptor]] = None
     return trainer
 
 
-def train(id: str = "model", noise_res: int = 16, noise_std: float = 0.2, batch_size: int = 16, max_epochs: int = 100, resume_checkpoint: bool = False):
+def train(id: str = "model", noise_res: int = 16, noise_std: float = 0.2, batch_size: int = 16, max_epochs: int = 100, resume_checkpoint: str = ''):
     print("Loading dataset ...")
     dd = BrainAEDataDescriptor(dataset="brats20", batch_size=batch_size)
     print("Create denoising mdoel ...")
@@ -115,7 +115,7 @@ def train(id: str = "model", noise_res: int = 16, noise_std: float = 0.2, batch_
                         wf=6, noise_std=noise_std, noise_res=noise_res)
     if resume_checkpoint:
         print('Resume checkpoint ...')
-        trainer.load(id)
+        trainer.load(resume_checkpoint)
     print("Training ...")
     trainer.train(max_epochs=max_epochs)
     print("Finish")
@@ -130,7 +130,7 @@ if __name__ == "__main__":
     parser.add_argument("-ns", "--noise_std", type=float, default=0.2, help="noise magnitude.")
     parser.add_argument("-bs", "--batch_size", type=int, default=16, help="model training batch size")
     parser.add_argument("-ep", "--max_epochs", type=int, default=200, help="max epochs")
-    parser.add_argument("-rs", "--resume_checkpoint", type=bool, default=False, help="resume checkpoint")
+    parser.add_argument("-rs", "--resume_checkpoint", type=str, default='', help="resume checkpoint")
 
     args = parser.parse_args()
 
