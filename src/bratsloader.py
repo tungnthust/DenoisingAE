@@ -47,7 +47,7 @@ class BRATSDataset(torch.utils.data.Dataset):
         for i in range(image.shape[0]):
             image[i] = irm_min_max_preprocess(image[i])
         mask = data['mask']
-        mask = F.interpolate(torch.Tensor(np.expand_dims(mask, axis=(0, 1))), mode="bilinear", size=(128, 128))[0][0]
+        mask = np.array(F.interpolate(torch.Tensor(np.expand_dims(mask, axis=(0, 1))), mode="bilinear", size=(128, 128))[0][0])
         mask = np.where(mask > 0, 1, 0)
         # padding_image = np.zeros((4, 256, 256))
         # padding_image[:, 8:-8, 8:-8] = image
