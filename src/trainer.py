@@ -185,7 +185,7 @@ class Trainer:
         saveable =  self.get_saveable_state()
         saveable.update(kwargs)
         epoch_no = saveable['epoch_no']
-        path = path if path is not None else Path(__file__).parent.parent / "saved_models" / f"{name}_{epoch_no}.pt"
+        path = path if path is not None else Path(__file__).parent.parent / "saved_models" / f"model_{epoch_no}.pt"
         path.parent.mkdir(parents=True, exist_ok=True)
         torch.save(saveable, path)
         print(f'Saved model at {path}')
