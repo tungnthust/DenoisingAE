@@ -59,11 +59,11 @@ class BRATSDataset(torch.utils.data.Dataset):
         padding_image[:, 8:-8, 8:-8] = image
         padding_mask = np.zeros((256, 256))
         padding_mask[8:-8, 8:-8] = mask
-        image_resized = F.interpolate(torch.Tensor(np.expand_dims(padding_image, axis=0)), mode="bilinear", size=(128, 128))[0]
-        mask_resized = F.interpolate(torch.Tensor(np.expand_dims(padding_mask, axis=(0, 1))), mode="bilinear", size=(128, 128))[0][0]
-        padding_image = np.array(image_resized)
-        padding_mask = np.array(mask_resized)
-        padding_mask = padding_mask > 0
+        # image_resized = F.interpolate(torch.Tensor(np.expand_dims(padding_image, axis=0)), mode="bilinear", size=(128, 128))[0]
+        # mask_resized = F.interpolate(torch.Tensor(np.expand_dims(padding_mask, axis=(0, 1))), mode="bilinear", size=(128, 128))[0][0]
+        # padding_image = np.array(image_resized)
+        # padding_mask = np.array(mask_resized)
+        # padding_mask = padding_mask > 0
         label = 1 if np.sum(mask) > 0 else 0
         cond = {}
         cond['y'] = label
