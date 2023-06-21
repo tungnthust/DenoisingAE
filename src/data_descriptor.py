@@ -8,18 +8,19 @@ from bratsloader import BRATSDataset
 
 class DataDescriptor:
 
-    def __init__(self, n_workers=2, batch_size=32, **kwargs):
+    def __init__(self, n_workers=2, fold=1, batch_size=32, **kwargs):
 
         self.n_workers = n_workers
         self.batch_size = batch_size
         self.dataset_cache = {}
+        self.fold = fold
 
-    def get_dataset(self, split: str):
+    def get_dataset(self, split: str, fold: int):
         raise NotImplemented("get_dataset needs to be overridden in a subclass.")
 
     def get_dataset_(self, split: str, cache=True, force=False):
         if split not in self.dataset_cache or force:
-            dataset = self.get_dataset(split)
+            dataset = self.get_dataset(split, fold=self.fold)
             if cache:
                 self.dataset_cache[split] = dataset
             return dataset
@@ -42,13 +43,18 @@ class DataDescriptor:
 
 class BrainAEDataDescriptor(DataDescriptor):
 
-    def __init__(self, dataset="brats20", **kwargs):
+    def __init__(self, dataset="brats20", fold=1, **kwargs):
         super().__init__(**kwargs)
 
-    def get_dataset(self, split: str):
-        assert split in ["train", "val"]  # "test" should not be used through the DataDescriptor interface in this case.
-
-        dataset = BRATSDataset(mode=split)
+    def get_dataset(self, split: str, fold: int):
+        assert split in ["train", "val", "test"]  # "test" should not be used through the DataDescriptor interface in this case.
+        if split == 'test':
+            test_flag = True
+        else:
+            test_flag = False
+        if split == 'val':
+            split = 'test'
+        dataset = BRATSDataset(mode=split, fold=fold, test_flag=test_flag)
 
         return dataset
 

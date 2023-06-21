@@ -2,6 +2,7 @@ import torch
 import numpy as np
 import torch.nn.functional as F
 import pickle
+import pandas as pd
 
 def normalize(image):
     """Basic min max scaler.
@@ -28,35 +29,42 @@ def irm_min_max_preprocess(image, low_perc=1, high_perc=99):
     return image
 
 class BRATSDataset(torch.utils.data.Dataset):
-    def __init__(self, mode="train"):
+    def __init__(self, mode="train", fold=1, test_flag=False, transforms=None):
         
         super().__init__()
         self.datapaths = []
-        if mode != 'test':
-            with open(f'/kaggle/working/DenoisingAE/data/brats20/{mode}_healthy_brats20_datapaths.pickle', 'rb') as fp:
-                self.datapaths = pickle.load(fp)
+        self.transforms = transforms
+        if self.transforms:
+            print("Transform for data augmentation.")
         else:
-            with open(f'/kaggle/working/DenoisingAE/data/brats20/val_unhealthy_brats20_datapaths.pickle', 'rb') as fp:
-                self.datapaths = pickle.load(fp)
+            print("No data augmentation")
+            
+        data_split = np.load('/kaggle/working/diffusion-anomaly/data/brats/data_split.npz', allow_pickle=True)
+        meta_data_df = pd.read_csv('/kaggle/working/diffusion-anomaly/data/brats/meta_data.csv')
+        volume_ids = data_split[f'{mode}_folds'].item()[f'fold_{fold}']
+        if not test_flag:
+            self.datapaths = meta_data_df[meta_data_df['volume'].isin(volume_ids) & meta_data_df['label'] == 0]['path'].values
+        else:
+            self.datapaths = meta_data_df[meta_data_df['volume'].isin(volume_ids) & meta_data_df['label'] == 1]['path'].values
+        print(f'Loaded data fold {fold}, test_flag = {test_flag}. Number of {mode} data: {len(self.datapaths)}')
 
     def __getitem__(self, idx):
         data = np.load(self.datapaths[idx])
         image = data['image']
         image = image[[1, 2, 3, 0], :, :]
-        image = np.array(F.interpolate(torch.Tensor(np.expand_dims(image, axis=0)), mode="bilinear", size=(128, 128))[0])
         for i in range(image.shape[0]):
             image[i] = irm_min_max_preprocess(image[i])
         mask = data['mask']
-        mask = np.array(F.interpolate(torch.Tensor(np.expand_dims(mask, axis=(0, 1))), mode="bilinear", size=(128, 128))[0][0])
-        mask = np.where(mask > 0, 1, 0)
-        # padding_image = np.zeros((4, 256, 256))
-        # padding_image[:, 8:-8, 8:-8] = image
-        # padding_mask = np.zeros((256, 256))
-        # padding_mask[8:-8, 8:-8] = mask
+        padding_image = np.zeros((4, 256, 256))
+        padding_image[:, 8:-8, 8:-8] = image
+        padding_mask = np.zeros((256, 256))
+        padding_mask[8:-8, 8:-8] = mask
         label = 1 if np.sum(mask) > 0 else 0
         cond = {}
         cond['y'] = label
-        return np.float32(image), np.float32(mask)
+        if self.transforms:
+            padding_image = self.transforms(torch.Tensor(padding_image))
+        return np.float32(padding_image), cond, label, np.float32(padding_mask)
 
     def __len__(self):
         return len(self.datapaths)
