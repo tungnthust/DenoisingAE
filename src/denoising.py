@@ -25,11 +25,11 @@ def denoising(identifier: str, data: Optional[Union[str, BrainAEDataDescriptor]]
 
         ns = torch.normal(mean=torch.zeros(x.shape[0], x.shape[1], noise_res, noise_res), std=noise_std).to(x.device)
 
-        ns = F.upsample_bilinear(ns, size=[256, 256])
+        ns = F.upsample_bilinear(ns, size=[128, 128])
 
         # Roll to randomly translate the generated noise.
-        roll_x = random.choice(range(256))
-        roll_y = random.choice(range(256))
+        roll_x = random.choice(range(128))
+        roll_y = random.choice(range(128))
         ns = torch.roll(ns, shifts=[roll_x, roll_y], dims=[-2, -1])
 
         mask = x.sum(dim=1, keepdim=True) > 0.01
@@ -111,8 +111,8 @@ def train(id: str = "model", noise_res: int = 16, noise_std: float = 0.2, batch_
     print("Loading dataset ...")
     dd = BrainAEDataDescriptor(dataset="brats20", fold=fold, batch_size=batch_size)
     print("Create denoising mdoel ...")
-    trainer = denoising(id, data=dd, lr=0.0001, depth=5,
-                        wf=7, noise_std=noise_std, noise_res=noise_res)
+    trainer = denoising(id, data=dd, lr=0.0001, depth=4,
+                        wf=6, noise_std=noise_std, noise_res=noise_res)
     if resume_checkpoint:
         print('Resume checkpoint ...')
         trainer.load(resume_checkpoint)
