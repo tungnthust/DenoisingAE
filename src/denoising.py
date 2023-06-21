@@ -25,7 +25,7 @@ def denoising(identifier: str, data: Optional[Union[str, DataDescriptor]] = None
 
         ns = torch.normal(mean=torch.zeros(x.shape[0], x.shape[1], noise_res, noise_res), std=noise_std).to(x.device)
 
-        ns = F.upsample_bilinear(ns, size=[128, 128])
+        ns = F.upsample_bilinear(ns, size=[256, 256])
 
         # Roll to randomly translate the generated noise.
         roll_x = random.choice(range(128))

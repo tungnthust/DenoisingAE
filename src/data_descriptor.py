@@ -41,10 +41,36 @@ class DataDescriptor:
         return dataloader
 
 
-class BrainAEDataDescriptor(DataDescriptor):
+class BrainAEDataDescriptor:
 
-    def __init__(self, dataset="brats20", fold=1, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, n_workers=2, fold=1, batch_size=32, **kwargs):
+
+        self.n_workers = n_workers
+        self.batch_size = batch_size
+        self.dataset_cache = {}
+        self.fold = fold
+
+    def get_dataset_(self, split: str, cache=True, force=False):
+        if split not in self.dataset_cache or force:
+            dataset = self.get_dataset(split, fold=self.fold)
+            if cache:
+                self.dataset_cache[split] = dataset
+            return dataset
+        else:
+            return self.dataset_cache[split]
+
+    def get_dataloader(self, split: str):
+        dataset = self.get_dataset_(split, cache=True)
+
+        shuffle = True if split == "train" else False
+        drop_last = False if len(dataset) < self.batch_size else True
+
+        dataloader = torch.utils.data.DataLoader(dataset,
+                                                 batch_size=self.batch_size,
+                                                 shuffle=shuffle,
+                                                 drop_last=drop_last)
+
+        return dataloader
 
     def get_dataset(self, split: str, fold: int):
         assert split in ["train", "val", "test"]  # "test" should not be used through the DataDescriptor interface in this case.
