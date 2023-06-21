@@ -9,7 +9,7 @@ from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 
 from utilities import move_to
-from data_descriptor import DataDescriptor
+from data_descriptor import BrainAEDataDescriptor
 
 
 class Trainer:
@@ -220,9 +220,9 @@ class Trainer:
         return self.additional_params.get("identifier")
 
 
-    def set_data(self, data: Optional[DataDescriptor]):
+    def set_data(self, data: Optional[BrainAEDataDescriptor]):
 
-        if isinstance(data, DataDescriptor):
+        if isinstance(data, BrainAEDataDescriptor):
             dd = data
         elif data is None:
             # Skip setting dataloaders for now
