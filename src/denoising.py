@@ -111,7 +111,7 @@ def train(id: str = "model", noise_res: int = 16, noise_std: float = 0.2, batch_
     print("Loading dataset ...")
     dd = BrainAEDataDescriptor(dataset="brats20", fold=fold, batch_size=batch_size)
     print("Create denoising mdoel ...")
-    trainer = denoising(id, data=dd, lr=0.0001, depth=4,
+    trainer = denoising(id, data=dd, lr=0.0001, depth=5,
                         wf=6, noise_std=noise_std, noise_res=noise_res)
     if resume_checkpoint:
         print('Resume checkpoint ...')
