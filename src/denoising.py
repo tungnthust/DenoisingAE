@@ -12,13 +12,13 @@ from torch.optim.lr_scheduler import CosineAnnealingLR
 from training import simple_train_step, simple_val_step
 from metrics import Loss
 from trainer import Trainer
-from data_descriptor import BrainAEDataDescriptor, DataDescriptor
+from data_descriptor import LiverAEDataDescriptor, DataDescriptor
 from bratsloader import BRATSDataset
 from utilities import median_pool, ModelSaver
 from unet import UNet
 
 
-def denoising(identifier: str, data: Optional[Union[str, BrainAEDataDescriptor]] = None, lr=0.001, depth=5, wf=7, n_input=4, noise_std=0.2, noise_res=16):
+def denoising(identifier: str, data: Optional[Union[str, LiverAEDataDescriptor]] = None, lr=0.001, depth=5, wf=7, n_input=4, noise_std=0.2, noise_res=16):
     device = torch.device("cuda")
     print(f'Noise resolution: {noise_res} - Depth: {depth} - WF: {wf}')
     def noise(x):
@@ -109,7 +109,7 @@ def denoising(identifier: str, data: Optional[Union[str, BrainAEDataDescriptor]]
 
 def train(id: str = "model", noise_res: int = 16, noise_std: float = 0.2, batch_size: int = 16, max_epochs: int = 100, fold: int = 1, resume_checkpoint: str = ''):
     print("Loading dataset ...")
-    dd = BrainAEDataDescriptor(dataset="brats20", fold=fold, batch_size=batch_size)
+    dd = LiverAEDataDescriptor(dataset="brats20", fold=fold, batch_size=batch_size)
     print("Create denoising mdoel ...")
     trainer = denoising(id, data=dd, lr=0.0001, depth=5,
                         wf=6, noise_std=noise_std, noise_res=noise_res)

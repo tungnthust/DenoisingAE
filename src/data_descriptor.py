@@ -5,6 +5,7 @@ import torch
 
 from data import BrainDataset
 from bratsloader import BRATSDataset
+from litsloader import LiTSDataset
 
 class DataDescriptor:
 
@@ -41,7 +42,7 @@ class DataDescriptor:
         return dataloader
 
 
-class BrainAEDataDescriptor:
+class LiverAEDataDescriptor:
 
     def __init__(self, n_workers=2, fold=1, batch_size=32, **kwargs):
 
@@ -80,7 +81,7 @@ class BrainAEDataDescriptor:
             test_flag = False
         if split == 'val':
             split = 'test'
-        dataset = BRATSDataset(mode=split, fold=fold, test_flag=test_flag)
+        dataset = LiTSDataset(mode=split, fold=fold, test_flag=test_flag)
 
         return dataset
 
