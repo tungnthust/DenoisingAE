@@ -18,7 +18,7 @@ from utilities import median_pool, ModelSaver
 from unet import UNet
 
 
-def denoising(identifier: str, data: Optional[Union[str, LiverAEDataDescriptor]] = None, lr=0.001, depth=5, wf=7, n_input=4, noise_std=0.2, noise_res=16):
+def denoising(identifier: str, data: Optional[Union[str, LiverAEDataDescriptor]] = None, lr=0.001, depth=5, wf=7, n_input=1, noise_std=0.2, noise_res=16):
     device = torch.device("cuda")
     print(f'Noise resolution: {noise_res} - Depth: {depth} - WF: {wf}')
     def noise(x):
