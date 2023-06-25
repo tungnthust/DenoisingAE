@@ -4,7 +4,6 @@ from typing import Optional
 import torch
 
 from data import BrainDataset
-from bratsloader import BRATSDataset
 from litsloader import LiTSDataset
 
 class DataDescriptor:
